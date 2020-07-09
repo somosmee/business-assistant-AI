@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  mongo_test:
+    image: mongo:4.2.5
+    container_name: mongo_meebot
+    restart: always
+    ports:
+      - 27021:27017
+    volumes:
+      - mongo:/var/lib/mongo
+volumes:
+  mongo:

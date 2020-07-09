@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"mee.usersProducts"}],"uuid":"884b65b9ae364b5e85505186b251e393"}

@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"mee.invoices"},{"v":{"$numberInt":"2"},"unique":true,"key":{"accessKey":{"$numberInt":"1"}},"name":"accessKey_1","background":true,"ns":"mee.invoices"}],"uuid":"6fcee58f2ef6416d8002f426e64fb6f8"}
