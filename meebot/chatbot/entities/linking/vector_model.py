@@ -12,7 +12,6 @@ class VectorModel:
         self.docs_tfidf = self.vectorizer.fit_transform(corpus)
 
     def get_similars(self, query, limit=5):
-        print('QUERY:', query)
         query_vector = self.vectorizer.transform([query])
         similarity_matrix = cosine_similarity(self.docs_tfidf, query_vector)
         results = self.get_products_from_similarities(similarity_matrix, self.doc_ids, limit=limit)
@@ -21,8 +20,6 @@ class VectorModel:
     def get_products_from_similarities(self, similarity_matrix, doc_ids, limit=5):
         products = []
         sorted_indexes = np.argsort(similarity_matrix, axis=0)
-        print('SIM_MATRIX:', similarity_matrix)
-        print('SORTED:', sorted_indexes)
 
         for index in sorted_indexes[:-limit:-1]:
             products.append(
