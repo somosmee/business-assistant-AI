@@ -11,8 +11,13 @@ class Helper:
 
     @staticmethod
     def get_month_index(entity):
-        months_index = {'janeiro': 1, 'fevereiro': 2, 'marco': 3, 'abril': 4, 'maio': 5, 'junho': 6, 'julho': 7, 'agosto': 8, 'setembro': 9, 'outubro': 10, 'novembro': 11, 'dezembro': 12}
-        months_abrev_index = {'jan': 1, 'fev': 2, 'mar': 3, 'abr': 4, 'jun': 6, 'jul': 7, 'ago': 8, 'set': 9, 'out': 10, 'nov': 11, 'dez': 12 }
+        months_index = {
+            'janeiro': 1, 'fevereiro': 2, 'marco': 3, 'abril': 4, 'maio': 5,
+            'junho': 6, 'julho': 7, 'agosto': 8, 'setembro': 9, 'outubro': 10,
+            'novembro': 11, 'dezembro': 12}
+        months_abrev_index = {
+            'jan': 1, 'fev': 2, 'mar': 3, 'abr': 4, 'jun': 6,
+            'jul': 7, 'ago': 8, 'set': 9, 'out': 10, 'nov': 11, 'dez': 12}
         match = re.search(months_regex, entity)
         if not match:
             return None

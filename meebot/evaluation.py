@@ -1,3 +1,4 @@
+import pprint
 import pandas as pd
 
 intents_dataset = pd.DataFrame([
@@ -20,27 +21,32 @@ intents_dataset = pd.DataFrame([
  ], columns=['message', 'label'])
 
 expected = [
-    { 'label': 'sales', 'entities': [('hoje', 'DATE')] },
-    { 'label': 'sales', 'entities': [('ontem', 'DATE')] },
-    { 'label': 'sales', 'entities': [('março', 'DATE')] },
-    { 'label': 'sales', 'entities': [('março', 'DATE'), ('junho', 'DATE')] },
-    { 'label': 'sales', 'entities': [('fev', 'DATE'), ('jun', 'DATE')] },
-    { 'label': 'sales', 'entities': [('01/02/2020', 'DATE'), ('01/06/2020', 'DATE')] },
-    { 'label': 'products', 'entities': [('heinekens', 'PRODUCT')] }
+    # {'label': 'sales', 'entities': [('hoje', 'DATE')]},
+    # {'label': 'sales', 'entities': [('ontem', 'DATE')]},
+    # {'label': 'sales', 'entities': [('março', 'DATE')]},
+    # {'label': 'sales', 'entities': [('março', 'DATE'), ('junho', 'DATE')]},
+    # {'label': 'sales', 'entities': [('fev', 'DATE'), ('jun', 'DATE')]},
+    # {'label': 'sales', 'entities': [
+    #     ('01/02/2020', 'DATE'),
+    #     ('01/06/2020', 'DATE')
+    # ]},
+    {'label': 'products', 'entities': [('heinekens', 'PRODUCT')]}
 ]
 
 messages = [
-    #'qual produto eu mais vendi hoje',
-    'como foram minhas vendas hoje ?',
-    'como foram minhas vendas ontem ?',
-    'como foram minhas vendas no mês de março ?',
-    'como foram minhas vendas entre março e junho ?',
-    'como foram minhas vendas entre fev e jun ?',
-    'como foram minhas vendas entre 01/02/2020 e 01/06/2020',
+    # -- inactive -- 'qual produto eu mais vendi hoje',
+    # 'como foram minhas vendas hoje ?',
+    # 'como foram minhas vendas ontem ?',
+    # 'como foram minhas vendas no mês de março ?',
+    # 'como foram minhas vendas entre março e junho ?',
+    # 'como foram minhas vendas entre fev e jun ?',
+    # 'como foram minhas vendas entre 01/02/2020 e 01/06/2020',
     'quantas heinekens tenho no meu estoque ?'
 ]
 
+
 def report(expected, responses):
+    pp = pprint.PrettyPrinter(indent=2)
     right_labels = 0
     wrong_labels = 0
     missing_entities = []
@@ -53,7 +59,10 @@ def report(expected, responses):
             wrong_labels += 1
 
         if len(expected[i]['entities']) != len(responses[i]['entities']):
-            missing_entities.append({ 'message': messages[i], 'expected': expected[i]['entities'], 'actual': responses[i]['entities'] })
+            missing_entities.append({
+                'message': messages[i],
+                'expected': expected[i]['entities'],
+                'actual': responses[i]['entities']})
 
     print('--- CLASSIFICATION ---')
     print('')
@@ -67,16 +76,17 @@ def report(expected, responses):
     else:
         pp.pprint(missing_entities)
 
+
 def run_tests(chatbot):
-    responses = []
+    # responses = []
     for message in messages:
         reply = chatbot.reply(message)
         print('REPLY:', reply)
-        resp = chatbot.understand(message)
-        print(resp)
-        print('')
-        responses.append(resp)
+        # resp = chatbot.understand(message)
+        # print(resp)
+        # print('')
+        # responses.append(resp)
 
-    print('--- REPORT ---')
-    print('')
-    report(expected, responses)
+    # print('--- REPORT ---')
+    # print('')
+    # report(expected, responses)

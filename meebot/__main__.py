@@ -1,6 +1,5 @@
 import os
 import docker
-import subprocess
 from meebot.env import setup_env
 from meebot.chatbot import ChatBot
 from meebot.evaluation import run_tests

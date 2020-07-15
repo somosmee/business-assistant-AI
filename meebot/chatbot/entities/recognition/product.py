@@ -1,4 +1,3 @@
-import pandas as pd
 from string import punctuation
 from nltk.corpus import stopwords
 from spacy.lang.pt import Portuguese
@@ -6,11 +5,12 @@ from nltk.tokenize import word_tokenize
 from nltk.metrics.distance import edit_distance
 from sklearn.feature_extraction.text import CountVectorizer
 
+
 class Preprocessing:
     def __init__(self):
         pass
 
-    def remove_stop_words(self, message, tokenizer, tokenized = True):
+    def remove_stop_words(self, message, tokenizer, tokenized=True):
         blacklist = set(stopwords.words('portuguese') + list(punctuation))
         tokens = []
         if tokenizer:
@@ -24,11 +24,12 @@ class Preprocessing:
             return ' '.join(clean_words)
 
 
-class NER:
+class ProductNER:
     '''
      NER - Named Entity Recognition Approaches created by Mee 🤖🔮💜
      Author: Guilherme Kodama 07/2020
     '''
+
     def __init__(self, corpus):
         self.nlp = Portuguese()
         self.vectorizer = CountVectorizer()
@@ -38,7 +39,9 @@ class NER:
         self.tokenizer = self.vectorizer.build_tokenizer()
 
     def recognize(self, message, algo='perfect_match', threshold=2):
-        tokens = self.preprocessing.remove_stop_words(message, tokenizer=self.tokenizer)
+        tokens = self.preprocessing.remove_stop_words(
+            message,
+            tokenizer=self.tokenizer)
 
         flag_tokens = {}
 
@@ -48,7 +51,8 @@ class NER:
                 if token in self.vocab:
                     flag_tokens[i] = i
 
-            # Calculate the Levenshtein edit-distance https://www.nltk.org/api/nltk.metrics.html#nltk.metrics.distance.edit_distance
+            # Calculate the Levenshtein edit-distance
+            # https://www.nltk.org/api/nltk.metrics.html#nltk.metrics.distance.edit_distance
             elif algo == 'edit_distance':
                 for word in self.vectorizer.get_feature_names():
                     if edit_distance(token, word) <= threshold:
@@ -57,4 +61,7 @@ class NER:
         if len(flag_tokens) == 0:
             return None
 
-        return [(' '.join([tokens[key] for key in flag_tokens.keys()]), 'PRODUCT')]
+        return [(' '.join(
+            [tokens[key] for key in flag_tokens.keys()]),
+            'PRODUCT')
+            ]

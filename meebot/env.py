@@ -1,3 +1,6 @@
+import subprocess
+
+
 def is_mongo_up(client):
     containers = client.containers.list()
     for container in containers:
@@ -5,7 +8,12 @@ def is_mongo_up(client):
             return True
     return False
 
+
 def setup_env(client):
-    if is_mongo_up(client) == False:
+    if is_mongo_up(client) is False:
         subprocess.run(['docker-compose', 'up', '-d'], cwd='./meebot/')
-        subprocess.run(['mongorestore', '--port', '27021', '--db', 'mee', 'dump/mee', '--drop'], cwd='./meebot/db/')
+        subprocess.run([
+            'mongorestore',
+            '--port', '27021',
+            '--db', 'mee',
+            'dump/mee', '--drop'], cwd='./meebot/db/')

@@ -29,7 +29,11 @@ class Preprocess:
     @staticmethod
     def remove_stopwords(message):
         blacklist = set(stopwords.words('portuguese') + list(punctuation))
-        clean_words = [word for word in word_tokenize(message) if word not in blacklist]
+        clean_words = [
+            word
+            for word in word_tokenize(message)
+            if word not in blacklist
+        ]
         return ' '.join(clean_words)
 
     @staticmethod
