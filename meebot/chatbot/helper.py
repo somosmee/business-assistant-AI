@@ -34,6 +34,9 @@ class Helper:
 
     @staticmethod
     def count_entities(entities, entity):
+        if entities is None:
+            return 0
+
         count = 0
         for item in entities:
             if item[1] == entity:

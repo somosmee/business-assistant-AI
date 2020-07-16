@@ -37,6 +37,15 @@ class Preprocess:
         return ' '.join(clean_words)
 
     @staticmethod
+    def remove_plural(message):
+        words = []
+        for word in word_tokenize(message):
+            if word[-1] == 's':
+                word = word[:-1]
+            words.append(word)
+        return ' '.join(words)
+
+    @staticmethod
     def preprocess_message(message):
         message = Preprocess.normalize(message)
         message = Preprocess.remove_stopwords(message)

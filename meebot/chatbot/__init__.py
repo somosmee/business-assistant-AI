@@ -51,12 +51,16 @@ class ChatBot:
         answer = 'Não entendi a sua pergunta'
 
         if intent == 'sales':
-            reply = self.sale_qa.answer(message, self.db)
+            reply = self.sale_qa.answer(
+                Preprocess.preprocess_message(message),
+                self.db)
             if reply:
                 answer = reply
 
         if intent == 'products':
-            reply = self.product_qa.answer(message, self.db)
+            reply = self.product_qa.answer(
+                Preprocess.preprocess_message(message),
+                self.db)
             if reply:
                 answer = reply
 

@@ -30,7 +30,9 @@ expected = [
     #     ('01/02/2020', 'DATE'),
     #     ('01/06/2020', 'DATE')
     # ]},
-    {'label': 'products', 'entities': [('heinekens', 'PRODUCT')]}
+    {'label': 'products', 'entities': [('heinekens', 'PRODUCT')]},
+    {'label': 'products', 'entities': []},
+    {'label': 'products', 'entities': []}
 ]
 
 messages = [
@@ -41,7 +43,9 @@ messages = [
     # 'como foram minhas vendas entre março e junho ?',
     # 'como foram minhas vendas entre fev e jun ?',
     # 'como foram minhas vendas entre 01/02/2020 e 01/06/2020',
-    'quantas heinekens tenho no meu estoque ?'
+    'quantas heinekens tenho no meu estoque ?',
+    'como está o meu estoque ?',
+    'quais produtos do meu estoque estão perto de acabar ?'
 ]
 
 

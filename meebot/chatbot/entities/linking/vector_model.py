@@ -11,8 +11,18 @@ class VectorModel:
             encoding='latin1', strip_accents='unicode', lowercase=True)
         self.docs_tfidf = self.vectorizer.fit_transform(corpus)
 
+    def has_no_match(self, query_vector):
+        if query_vector.max() == 0.0:
+            return True
+        return False
+
     def get_similars(self, query, limit=5):
+        print('[VectorModal] query:', query)
         query_vector = self.vectorizer.transform([query])
+
+        if self.has_no_match(query_vector):
+            return None
+
         similarity_matrix = cosine_similarity(self.docs_tfidf, query_vector)
         results = self.get_products_from_similarities(similarity_matrix, self.doc_ids, limit=limit)
         return results

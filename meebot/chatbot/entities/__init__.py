@@ -16,6 +16,7 @@ class ProductQA:
     default_answer = 'Não entendi a sua pergunta'
     products_template = Template(
                 'Você tem $inventory $product no seu estoque atualmente')
+    inventory_template = Template('Você tem $count produtos perto de acabar no seu estoque: $products')
 
     def __init__(self, db, corpus, doc_ids):
         self.ner = ProductNER(corpus)
@@ -23,7 +24,7 @@ class ProductQA:
 
     def answer(self, query, db) -> str:
         entities = self.understand(query)
-        answer = self.build_answer(entities, db)
+        answer = self.build_answer(query, entities, db)
         return answer
 
     def understand(self, query):
@@ -31,7 +32,7 @@ class ProductQA:
             query,
             algo='edit_distance')
 
-    def build_answer(self, entities, db):
+    def build_answer(self, query, entities, db):
         product_count = Helper.count_entities(entities, 'PRODUCT')
         if product_count == 1:
             product_name = entities[0][0]
@@ -39,12 +40,53 @@ class ProductQA:
             product = self.nel.get_similarest(product_name)
             print('product:', product)
 
-            inventory = db.inventory.find_one({
+            if product is None:
+                return ProductQA.default_answer
+
+            inventory = db.inventory.find({
                 'grocery': ObjectId(os.getenv('USER_OID')),
-                'product': ObjectId(product['id'])})
+                'product': ObjectId(product['id'])}).sort('createdAt', 1).limit(1)
             answer = ProductQA.products_template.safe_substitute({
-                'inventory': inventory['balance'],
+                'inventory': inventory[0]['balance'],
                 'product': product_name})
+        elif product_count == 0 and 'estoque' in query:
+            inventories = db.inventory.aggregate([
+                {
+                    '$match': {'grocery': ObjectId(os.getenv('USER_OID'))}
+                },
+                {
+                    '$sort': {'createdAt': -1}
+                },
+                {
+                    '$group': {
+                        '_id': '$product',
+                        'balance': {'$first': '$balance'}
+                    }
+                },
+                {
+                    '$match': {'balance': {'$gte': 0, '$lte': 5}}
+                },
+                {
+                    '$sort': {'balance': -1}
+                }
+            ])
+            inventories = list(inventories)
+
+            get_ids = lambda o: o['_id']
+            get_names = lambda o: o['name']
+
+            products = db.usersProducts.find({
+                'grocery': ObjectId(os.getenv('USER_OID')),
+                'product': {'$in': list(map(get_ids, inventories))}
+            }, {
+                'name': 1
+            })
+            products = list(products)
+            names = list(map(get_names, products))
+
+            return ProductQA.inventory_template.safe_substitute({
+                'count': len(inventories),
+                'products': ', '.join(names[: 5])})
         else:
             answer = ProductQA.default_answer
 

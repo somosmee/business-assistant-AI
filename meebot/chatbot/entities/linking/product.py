@@ -12,4 +12,6 @@ class ProductNEL:
 
     def get_similarest(self, query):
         similars = self.model.get_similars(query, limit=5)
+        if similars is None:
+            return None
         return similars[0]

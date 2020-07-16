@@ -56,12 +56,12 @@ class ProductNER:
             elif algo == 'edit_distance':
                 for word in self.vectorizer.get_feature_names():
                     if edit_distance(token, word) <= threshold:
-                        flag_tokens[i] = i
+                        flag_tokens[i] = word
 
         if len(flag_tokens) == 0:
             return None
 
         return [(' '.join(
-            [tokens[key] for key in flag_tokens.keys()]),
+            [flag_tokens[key] for key in flag_tokens.keys()]),
             'PRODUCT')
             ]
