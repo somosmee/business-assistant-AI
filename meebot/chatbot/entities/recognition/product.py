@@ -38,7 +38,7 @@ class ProductNER:
         self.vocab = self.vectorizer.vocabulary_
         self.tokenizer = self.vectorizer.build_tokenizer()
 
-    def recognize(self, message, algo='perfect_match', threshold=2):
+    def recognize(self, message, algo='perfect_match', threshold=1):
         tokens = self.preprocessing.remove_stop_words(
             message,
             tokenizer=self.tokenizer)
@@ -59,7 +59,7 @@ class ProductNER:
                         flag_tokens[i] = word
 
         if len(flag_tokens) == 0:
-            return None
+            return []
 
         return [(' '.join(
             [flag_tokens[key] for key in flag_tokens.keys()]),

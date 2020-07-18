@@ -48,6 +48,7 @@ class ChatBot:
         prediction = self.classifier.predict(message)
         intent = prediction['label']
 
+        answer_data = None
         answer = 'Não entendi a sua pergunta'
 
         if intent == 'sales':
@@ -55,13 +56,18 @@ class ChatBot:
                 Preprocess.preprocess_message(message),
                 self.db)
             if reply:
-                answer = reply
+                answer_data = reply
 
         if intent == 'products':
             reply = self.product_qa.answer(
                 Preprocess.preprocess_message(message),
                 self.db)
             if reply:
-                answer = reply
+                answer_data = reply
 
-        return answer
+        if answer_data:
+            return answer_data
+        else:
+            return {
+                'answer': answer
+            }

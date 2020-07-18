@@ -15,8 +15,10 @@ class ProductQA:
 
     default_answer = 'Não entendi a sua pergunta'
     products_template = Template(
-                'Você tem $inventory $product no seu estoque atualmente')
-    inventory_template = Template('Você tem $count produtos perto de acabar no seu estoque: $products')
+        'Você tem $inventory $product no seu estoque atualmente')
+
+    inventory_template = Template(
+        'Você tem $count produtos perto de acabar no seu estoque: $products ...')
 
     def __init__(self, db, corpus, doc_ids):
         self.ner = ProductNER(corpus)
@@ -25,7 +27,13 @@ class ProductQA:
     def answer(self, query, db) -> str:
         entities = self.understand(query)
         answer = self.build_answer(query, entities, db)
-        return answer
+        return {
+            'meta': {
+                'entities': entities,
+                'intent': 'products'
+            },
+            'answer': answer
+        }
 
     def understand(self, query):
         return self.ner.recognize(
@@ -45,10 +53,13 @@ class ProductQA:
 
             inventory = db.inventory.find({
                 'grocery': ObjectId(os.getenv('USER_OID')),
-                'product': ObjectId(product['id'])}).sort('createdAt', 1).limit(1)
+                'product': ObjectId(product['id'])}).sort(
+                'createdAt', 1).limit(1)
+
             answer = ProductQA.products_template.safe_substitute({
                 'inventory': inventory[0]['balance'],
                 'product': product_name})
+
         elif product_count == 0 and 'estoque' in query:
             inventories = db.inventory.aggregate([
                 {
@@ -104,7 +115,13 @@ class SaleQA:
     def answer(self, query, db) -> str:
         entities = self.understand(query)
         answer = self.build_answer(entities, db)
-        return answer
+        return {
+            'meta': {
+                'entities': entities,
+                'intent': 'sales'
+            },
+            'answer': answer
+        }
 
     def understand(self, query):
         return self.ner.recognize(query)
